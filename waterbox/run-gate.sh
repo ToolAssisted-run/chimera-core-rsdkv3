@@ -160,9 +160,9 @@ fi
 mkdir -p "$work/narrow"
 cp "$work/synth/Data.rsdk" "$work/narrow/"
 printf '{"screenWidth": 320}' > "$work/narrow/settings"
-"$native" "$work/narrow" --frames 10 --screenshot 9:"$work/narrow/s.tga" > "$work/narrow/n" 2>&1
-"$wbx" "$core" "$work/narrow" --frames 10 > "$work/narrow/w" 2>&1
-width="$(python3 -c "import sys; d = open(sys.argv[1], 'rb').read(18); print(d[12] | d[13] << 8)" "$work/narrow/s.tga")"
+"$native" "$work/narrow" --frames 10 --screenshot 9:"$work/narrow/s.tga" > "$work/narrow/n" 2>&1 || true
+"$wbx" "$core" "$work/narrow" --frames 10 > "$work/narrow/w" 2>&1 || true
+width="$(python3 -c "import sys; d = open(sys.argv[1], 'rb').read(18); print(d[12] | d[13] << 8)" "$work/narrow/s.tga" 2>/dev/null || echo none)"
 if [ "$width" = 320 ]; then
 	same settings "$work/narrow/w" "$work/narrow/n" "screenWidth 320 draws a 320-pixel picture; native = sandbox"
 else

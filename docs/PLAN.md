@@ -86,10 +86,18 @@ APKs, and Sonic Mania's Android files.
   turbo, the clock, the refusals, the firmware name, the frontend's game
   time and refusal). Rerecord and teeth were not broken this round.
 
+## Windows (2026-10-17)
+
+The package played in Chimera on Windows (the 2026-10-16 nightly, headless,
+with a configuration of its own), the test game's 100 frames, through the frontend
+test's witness: the memory domains after the last frame are the Linux
+reference's, byte for byte. The witness now runs to a frame count rather
+than a number of frames: on Windows a project opens two frames in, and a
+project run pauses at the end of its movie.
+
 ## Not done
 
 - The Steam release's data and videos: not tried (no copy here).
 - Sonic Origins' data: not tried.
 - Mods: the mod loader is off.
-- Windows: the package has not been run on Windows yet.
 - The Original Controls setting's two values were not checked in play.
