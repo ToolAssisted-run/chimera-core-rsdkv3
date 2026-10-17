@@ -228,7 +228,24 @@ if [ -n "$game" ]; then
 			--press 3000:S:5 --press 3100:R:200 --press 3150:A:10 --press 3400:R:200 --press 3420:B:20
 	fi
 	gat=$((gn * 9 / 10))
-	"$native" "$work/game" --frames $gn "$@" --trace "$work/g.t" --trace-props "Stage.List,Stage.Position" > "$work/g.n"
+	"$native" "$work/game" --frames $gn "$@" --trace "$work/g.t" --trace-props "Stage.List,Stage.Position" --audio "$work/g.pcm" > "$work/g.n"
+	# Sound (chimera#302): the engine turned all its sound off when SDL could
+	# not convert samples, and the run was silent from start to end. Now at
+	# least half of every 5 seconds after the first 10 holds sound.
+	quiet="$(python3 - "$work/g.pcm" <<'PY'
+import array, sys
+a = array.array("h")
+a.frombytes(open(sys.argv[1], "rb").read())
+step = 44100 * 2 * 5
+blocks = [a[i:i + step] for i in range(2 * step, len(a) - step + 1, step)]
+print(sum(1 for b in blocks if sum(1 for v in b if v) < len(b) // 2) if blocks else -1)
+PY
+)"
+	if [ "$quiet" = 0 ]; then
+		pass "game: sound - every 5 seconds after the first 10 holds sound"
+	else
+		fail "game: sound - $quiet stretch(es) of 5 seconds after the first 10 are mostly silent (all of them were, when SDL had no sample converters)"
+	fi
 	"$wbx" "$core" "$work/game" --frames $gn "$@" > "$work/g.w" 2>/dev/null
 	stage="$(tail -1 "$work/g.t" | awk '{ print $4 "/" $5 }')"
 	same game "$work/g.w" "$work/g.n" "native = sandbox, $gn frames (stage list/position at the end: $stage)"

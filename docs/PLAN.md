@@ -95,7 +95,24 @@ reference's, byte for byte. The witness now runs to a frame count rather
 than a number of frames: on Windows a project opens two frames in, and a
 project run pauses at the end of its movie.
 
-## Not done
+## Sound (2026-10-17, chimera#302)
+
+Sonic CD played no sound at all. RSDKv3 opens its sound device and then a
+stream for the sound of its videos; when the stream cannot be made it turns
+all its sound off. The stream could not be made because SDL had no sample
+converters: SDL chooses them when its audio starts, and here the device is
+the core's, so nothing started it. And even when asked, this build had none
+to give: on x86-64 SDL compiles only its SSE2 converters and picks them by
+asking the CPU, which this build never does (SDL_CPUINFO_DISABLED).
+
+Now SDL_audiotypecvt.c is compiled without `__SSE2__`, so SDL compiles its C
+converters (the same on every computer, as sources.mk always meant), and
+the sound seam has SDL choose them when the device opens. Measured, 3,600
+frames with the test script's presses: silent throughout before; every 5
+seconds after the first 10 more than half sound now. New check `game:
+sound` (it fails on the silent run); test script all passed, frontend tests
+9/0.
+
 
 - The Steam release's data and videos: not tried (no copy here).
 - Sonic Origins' data: not tried.
