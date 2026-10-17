@@ -253,6 +253,60 @@ PY
 	same game "$work/g.r" "$work/g.w" "rerecord = straight"
 	"$wbx" "$core" "$work/game" --frames $gn "$@" --session-at $gat > "$work/g.s" 2>/dev/null
 	same game "$work/g.s" "$work/g.w" "session at $gat = straight"
+
+	# Save data (chimera#302): the route writes SData.bin; Export Save Data
+	# gives it; a project given it back starts with it - the save select shows
+	# slot 1 in use, where a fresh game shows four new games - and a file
+	# with a name the game does not keep is refused
+	mkdir -p "$work/sd" "$work/sdin" "$work/sdin-out" "$work/sdx"
+	"$native" "$work/game" --frames $gn "$@" --savedata-out "$work/sd" > "$work/sd.n"
+	cp "$game" "$work/sdin/Data.rsdk"
+	cp "$work/sd/SData.bin" "$work/sdin/" 2>/dev/null
+	printf '{"savedata":["SData.bin"]}' > "$work/sdin/slots"
+	"$native" "$work/sdin" --frames 1 --savedata-out "$work/sdin-out" > "$work/sdin1.n"
+	sel="--press 1200:S:5 --press 1700:D:5 --press 1800:U:5 --press 1900:A:5"
+	# shellcheck disable=SC2086
+	"$native" "$work/game" --frames 2200 $sel > "$work/fresh.n"
+	# shellcheck disable=SC2086
+	"$native" "$work/sdin" --frames 2200 $sel > "$work/seeded.n"
+	# shellcheck disable=SC2086
+	"$wbx" "$core" "$work/sdin" --frames 2200 $sel > "$work/seeded.w" 2>/dev/null
+	cp "$game" "$work/sdx/Data.rsdk"
+	cp "$work/sd/SData.bin" "$work/sdx/Other.bin" 2>/dev/null
+	printf '{"savedata":["Other.bin"]}' > "$work/sdx/slots"
+	"$native" "$work/sdx" --frames 1 > "$work/sdx.n" 2>&1 || true
+	if [ ! -s "$work/sd/SData.bin" ]; then
+		fail "game: save data - the route wrote no SData.bin to export"
+	elif ! cmp -s "$work/sd/SData.bin" "$work/sdin-out/SData.bin"; then
+		fail "game: save data - a project given SData.bin does not start with those bytes"
+	elif [ "$(grep videoHash "$work/fresh.n")" = "$(grep videoHash "$work/seeded.n")" ]; then
+		fail "game: save data - the save select with the save given is the fresh game's: the game did not read it"
+	elif ! grep -q "Other.bin is not a file this game keeps" "$work/sdx.n"; then
+		fail "game: save data - a save named Other.bin was not refused ($(tail -1 "$work/sdx.n"))"
+	else
+		pass "game: save data - SData.bin ($(stat -c %s "$work/sd/SData.bin") bytes) exported, given back and read (the save select differs from a fresh game's), a wrong name refused"
+		same game "$work/seeded.w" "$work/seeded.n" "save data given: native = sandbox, 2200 frames"
+	fi
+
+	# The developer menu (chimera#302): with the Developer Menu setting on,
+	# Dev Menu (Escape) opens it; with the setting off the same press changes
+	# nothing, as the control is not there
+	for dm in on off; do
+		mkdir -p "$work/dm-$dm"
+		cp "$game" "$work/dm-$dm/Data.rsdk"
+		if [ "$dm" = on ]; then printf '{"devMenu": true}' > "$work/dm-$dm/settings"; fi
+		"$native" "$work/dm-$dm" --frames 800 --press 600:E:5 > "$work/dm-$dm.n"
+	done
+	"$wbx" "$core" "$work/dm-on" --frames 800 --press 600:E:5 > "$work/dm-on.w" 2>/dev/null
+	"$native" "$work/dm-off" --frames 800 > "$work/dm-none.n"
+	if [ "$(grep videoHash "$work/dm-on.n")" = "$(grep videoHash "$work/dm-off.n")" ]; then
+		fail "game: developer menu - Dev Menu with the setting on made no difference to the picture"
+	elif [ "$(grep videoHash "$work/dm-off.n")" != "$(grep videoHash "$work/dm-none.n")" ]; then
+		fail "game: developer menu - with the setting off, Dev Menu still changed the game"
+	else
+		pass "game: developer menu - Dev Menu opens it with the setting on, and does nothing with the setting off"
+		same game "$work/dm-on.w" "$work/dm-on.n" "developer menu: native = sandbox"
+	fi
 else
 	echo "SKIP game: no Sonic CD data file given (-g <Data.rsdk>); it is never in the repository"
 fi

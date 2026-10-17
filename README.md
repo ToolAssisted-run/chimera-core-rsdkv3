@@ -24,8 +24,14 @@ contains none of the game.
 ## Settings
 
 Language, screen width (320 to 424 pixels, 424 by default), the special
-stages' high-resolution floor, the game's Original Controls option, and the random
-seed. Each is recorded in the project.
+stages' high-resolution floor, the game's Original Controls option, the random
+seed, and the engine's developer menu (with a Dev Menu control to open it).
+Each is recorded in the project.
+
+## Save data
+
+Emulator > Export Save Data gives the game's saves, SData.bin and SGame.bin.
+A project takes them back in its Save data slot, under those names.
 
 ## What it does not do yet
 

@@ -2,7 +2,8 @@
   "_comment": [
     "Default bindings for the Retro Engine's eight inputs: the keyboard as the decompilation's own settings.ini has it - the arrows,",
     "Z, X and C for A, B and C, Enter for Start. The first pad: the d-pad and left stick as the directions, A, B and X as A, B and C,",
-    "Start as Start, as the decompilation maps a controller."
+    "Start as Start, as the decompilation maps a controller.",
+    "Dev Menu is Escape, as the decompilation opens its developer menu."
   ],
   "AllTrollers": {
     "Sonic CD": {
@@ -13,7 +14,8 @@
       "P1 A": "Z, J1 B1, X1 A",
       "P1 B": "X, J1 B2, X1 B",
       "P1 C": "C, J1 B3, X1 X",
-      "P1 Start": "Enter, J1 B10, X1 Start"
+      "P1 Start": "Enter, J1 B10, X1 Start",
+      "Dev Menu": "Escape"
     }
   }
 }

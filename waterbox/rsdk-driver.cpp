@@ -41,6 +41,7 @@ struct Driver
 	int init_done;
 
 	uint8_t held[RSDK_BTN_COUNT];
+	int dev_held, dev_sent;   /* the Dev Menu button, and what the engine was last told of it */
 	uint8_t keys[SDL_NUM_SCANCODES];
 
 	uint64_t frames;
@@ -160,6 +161,27 @@ int rsdkdrv_init(char *err, int errsize)
 void rsdkdrv_set_button(int index, int down)
 {
 	if (index >= 0 && index < RSDK_BTN_COUNT) g.held[index] = down ? 1 : 0;
+	if (index == RSDK_BTN_DEV_MENU) g.dev_held = down && g.settings.dev_menu ? 1 : 0;
+}
+
+int rsdkdrv_dev_menu(void) { return g.settings.dev_menu; }
+
+/* The engine opens its developer menu on Escape, which it reads as an SDL
+ * key event (RetroEngine.cpp ProcessEvents), not from the keyboard state the
+ * other inputs come from. So the Dev Menu button is told to it as Escape
+ * going down and coming up, queued before the frame polls its events
+ * (chimera#302). */
+static void send_dev_menu(void)
+{
+	if (g.dev_held == g.dev_sent) return;
+	SDL_Event e;
+	SDL_zero(e);
+	e.type = g.dev_held ? SDL_KEYDOWN : SDL_KEYUP;
+	e.key.state = g.dev_held ? SDL_PRESSED : SDL_RELEASED;
+	e.key.keysym.scancode = SDL_SCANCODE_ESCAPE;
+	e.key.keysym.sym = SDLK_ESCAPE;
+	SDL_PushEvent(&e);
+	g.dev_sent = g.dev_held;
 }
 
 void gamestate_to_game(void);
@@ -171,6 +193,7 @@ void rsdkdrv_frame(int render)
 	if (!Engine.running) return;
 	for (int i = 0; i < RSDK_BTN_COUNT; i++) g.keys[k_scancodes[i]] = g.held[i];
 	gamestate_to_game();
+	send_dev_menu();
 	/* a frame reads the controls unless it is the one in which the engine
 	 * loads a stage (ProcessStage's STAGEMODE_LOAD: files, scripts and the
 	 * objects' startup, and no object runs) */
