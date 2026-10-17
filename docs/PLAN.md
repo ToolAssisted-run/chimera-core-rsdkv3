@@ -113,6 +113,30 @@ seconds after the first 10 more than half sound now. New check `game:
 sound` (it fails on the silent run); test script all passed, frontend tests
 9/0.
 
+## Developer menu and save data (2026-10-17, chimera#302, user-decided)
+
+The owner asked for both after a user's list.
+
+- **Developer menu**: a Developer Menu setting writes DevMenu=true into the
+  engine's settings file, and adds a Dev Menu control. The engine opens the
+  menu on Escape, which it reads as an SDL key event, not from the keyboard
+  state its other inputs come from, so the driver queues Escape going down
+  and up before the frame polls its events. The control is live only with
+  the setting on (IsButtonActive), so a project without it carries the
+  engine's eight inputs, as before.
+- **Save data**: SData.bin and SGame.bin, which the core keeps in memory,
+  are the Export Save Data group (those that hold anything), and a Save data
+  slot (at most two .bin files) puts them back before the seal. A name the
+  game does not keep is refused.
+
+Tests: `game: save data` (the route writes SData.bin, 32,768 bytes; given
+back, the save select shows slot 1 in use; a wrong name is refused; native
+= sandbox) and `game: developer menu` (the picture changes with the setting
+on, not with it off; native = sandbox). Each failed with its part taken
+out. The sandbox runner now mounts a .bin file the slots file names (its
+own outputs end in .bin too). Frontend tests 9/0 (9 bindings).
+
+## Not done
 
 - The Steam release's data and videos: not tried (no copy here).
 - Sonic Origins' data: not tried.
