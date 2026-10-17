@@ -1,0 +1,48 @@
+{
+  "package": "rsdkv3",
+  "effectiveTerms": "The RSDKv3/v4 Decompilation Source Code License v2 (non-commercial; credit the authors; downloadable content off by default; no game assets) for the engine and the patches to it; MIT for the integration; the libraries' own licences",
+  "commercialUse": "no: the decompilation's licence forbids any use for profit",
+  "note": "The built core combines this repository's integration (MIT) with the RSDKv3 decompilation, a decompilation of Christian \"Taxman\" Whitehead's Retro Engine v3 by Rubberduckycooly and st×tic, compiled in from the submodule extern/RSDKv3 with this repository's patches/ applied (a modified copy of its source, under its licence); SDL 2 (zlib licence), whose software renderer, sound conversion and file reader the engine uses; and libogg and libvorbis (BSD-3-Clause), which decode the game's Ogg Vorbis music and sound effects. The decompilation's licence allows copying, modifying and distributing for public or private use as long as a build given to anyone has the downloadable content off by default (this core defines RSDK_AUTOBUILD, which forces it off), nothing is used for profit, the decompilation and the original are credited and not claimed, no game asset is distributed, and the licence goes with every modified copy of the source. The package carries none of Sonic CD's data: the game's data file is the project's, supplied by the user.",
+  "components": [
+    {
+      "name": "chimera-core-rsdkv3 (integration)",
+      "license": "MIT",
+      "url": "https://github.com/ToolAssisted-run/chimera-core-rsdkv3",
+      "commit": "{selfCommit}",
+      "file": "LICENSE",
+      "sourceUrl": "https://github.com/ToolAssisted-run/chimera-core-rsdkv3/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "RSDKv3 decompilation (Retro Engine v3)",
+      "license": "RSDKv3/v4 Decompilation Source Code License v2 (non-commercial)",
+      "url": "https://github.com/RSDKModding/RSDKv3-Decompilation",
+      "commit": "{submodule:extern/RSDKv3}",
+      "file": "extern/RSDKv3/LICENSE.md",
+      "sourceUrl": "https://github.com/RSDKModding/RSDKv3-Decompilation/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "SDL 2",
+      "license": "Zlib",
+      "url": "https://github.com/libsdl-org/SDL",
+      "commit": "{submodule:extern/SDL}",
+      "file": "extern/SDL/LICENSE.txt",
+      "sourceUrl": "https://github.com/libsdl-org/SDL/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "libogg",
+      "license": "BSD-3-Clause",
+      "url": "https://github.com/xiph/ogg",
+      "commit": "{submodule:extern/ogg}",
+      "file": "extern/ogg/COPYING",
+      "sourceUrl": "https://github.com/xiph/ogg/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "libvorbis",
+      "license": "BSD-3-Clause",
+      "url": "https://github.com/xiph/vorbis",
+      "commit": "{submodule:extern/vorbis}",
+      "file": "extern/vorbis/COPYING",
+      "sourceUrl": "https://github.com/xiph/vorbis/archive/{commit}.tar.gz"
+    }
+  ]
+}
