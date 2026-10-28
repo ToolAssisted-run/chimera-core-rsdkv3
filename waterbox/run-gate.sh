@@ -183,9 +183,9 @@ mkdir -p "$work/none" "$work/junk" "$work/wide"
 head -c 100000 /dev/zero > "$work/junk/Data.rsdk"
 cp "$work/synth/Data.rsdk" "$work/wide/"
 printf '{"screenWidth": 640}' > "$work/wide/settings"
-refuse none "Data.rsdk) is not there" "no data file"
-refuse junk "the engine did not start" "a file of zeros"
-refuse wide "goes from 320 to 424" "screenWidth 640"
+refuse none "error.game_s_data_file_data_rsdk" "no data file"
+refuse junk "error.engine_did_not_start" "a file of zeros"
+refuse wide "error.setting_screenwidth_is_it" "screenWidth 640"
 
 echo "== clock"
 if nm "$core" | grep -qE ' (T|W|t) (time|__real_time)$'; then
@@ -281,7 +281,7 @@ PY
 		fail "game: save data - a project given SData.bin does not start with those bytes"
 	elif [ "$(grep videoHash "$work/fresh.n")" = "$(grep videoHash "$work/seeded.n")" ]; then
 		fail "game: save data - the save select with the save given is the fresh game's: the game did not read it"
-	elif ! grep -q "Other.bin is not a file this game keeps" "$work/sdx.n"; then
+	elif ! grep -q "error.save_data_is_not_a_file_this.Other.bin" "$work/sdx.n"; then
 		fail "game: save data - a save named Other.bin was not refused ($(tail -1 "$work/sdx.n"))"
 	else
 		pass "game: save data - SData.bin ($(stat -c %s "$work/sd/SData.bin") bytes) exported, given back and read (the save select differs from a fresh game's), a wrong name refused"

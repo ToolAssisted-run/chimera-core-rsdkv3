@@ -182,19 +182,19 @@ const char *rsdkdrv_game_properties(void)
 	GS("Stage.List", 10, "u8", ", \"group\": \"Stage\", \"values\": { \"0\": \"Presentation\", \"1\": \"Regular\", \"2\": \"Bonus\", \"3\": \"Special\" }");
 	GS("Stage.Position", 11, "u8", ", \"group\": \"Stage\"");
 	GS("Stage.Act", 12, "s32", ", \"group\": \"Stage\"");
-	GS("Stage.Time Ms", 16, "u32", ", \"group\": \"Stage\", \"description\": \"The stage timer (minutes, seconds and hundredths), in milliseconds\"");
+	GS("Stage.Time Ms", 16, "u32", ", \"group\": \"Stage\", \"description\": \"property.stage_time_ms\"");
 	GS("Stage.Frame Counter", 20, "s32", ", \"group\": \"Stage\"");
 	GS("Stage.Time Enabled", 24, "bool", ", \"group\": \"Stage\"");
 	P("    { \"name\": \"Stage.Folder\", \"domain\": \"Game State\", \"offset\": 32, \"type\": \"string\", \"length\": 64, \"writable\": false, \"group\": \"Stage\" },\n");
 	P("    { \"name\": \"Stage.Name\", \"domain\": \"Game State\", \"offset\": 96, \"type\": \"string\", \"length\": 64, \"writable\": false, \"group\": \"Stage\" },\n");
 
 	static const struct { const char *name; int off; const char *type; const char *desc; } k_player[] = {
-		{ "Entity", 0, "s32", "The object the player is" },
-		{ "X", 4, "s32", "Position, 16.16 fixed point" },
-		{ "Y", 8, "s32", "Position, 16.16 fixed point" },
+		{ "Entity", 0, "s32", "property.player.entity" },
+		{ "X", 4, "s32", "property.player.x" },
+		{ "Y", 8, "s32", "property.player.x" },
 		{ "X Velocity", 12, "s32", "" },
 		{ "Y Velocity", 16, "s32", "" },
-		{ "Speed", 20, "s32", "Ground speed" },
+		{ "Speed", 20, "s32", "property.player.speed" },
 		{ "Screen X", 24, "s32", "" },
 		{ "Screen Y", 28, "s32", "" },
 		{ "Angle", 32, "s32", "" },
@@ -209,7 +209,7 @@ const char *rsdkdrv_game_properties(void)
 		{ "Visible", 82, "u8", "" },
 		{ "Tile Collisions", 83, "u8", "" },
 		{ "Object Interactions", 84, "u8", "" },
-		{ "Left", 85, "u8", "The player's controls this frame" },
+		{ "Left", 85, "u8", "property.player.left" },
 		{ "Right", 86, "u8", "" },
 		{ "Up", 87, "u8", "" },
 		{ "Down", 88, "u8", "" },
@@ -217,8 +217,8 @@ const char *rsdkdrv_game_properties(void)
 		{ "Jump Hold", 90, "u8", "" },
 		{ "Follow Player 1", 91, "u8", "" },
 		{ "Track Scroll", 92, "u8", "" },
-		{ "Gravity", 93, "u8", "In the air" },
-		{ "Water", 94, "u8", "Under water" },
+		{ "Gravity", 93, "u8", "property.player.gravity" },
+		{ "Water", 94, "u8", "property.player.water" },
 		{ "Top Speed", 96, "s32", "" },
 		{ "Acceleration", 100, "s32", "" },
 		{ "Deceleration", 104, "s32", "" },

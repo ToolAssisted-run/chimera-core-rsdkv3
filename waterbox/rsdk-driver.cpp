@@ -33,6 +33,11 @@
 
 #include "rsdk-driver.h"
 
+/* A text a person reads is a key of languages/en.json, each of its
+ * arguments after a TEXT_ARG (chimera docs/translations.md). TEXT_ARG is a
+ * string of its own so the byte after it is never read as more of its hex. */
+#define TEXT_ARG "\x1f"
+
 namespace {
 
 struct Driver
@@ -132,7 +137,7 @@ int rsdkdrv_init(char *err, int errsize)
 	rsdk_settings_read(&g.settings);
 	if (g.settings.screen_width < 320 || g.settings.screen_width > 424)
 	{
-		snprintf(err, (size_t)errsize, "the setting screenWidth is %d; it goes from 320 to 424", g.settings.screen_width);
+		snprintf(err, (size_t)errsize, "error.setting_screenwidth_is_it" TEXT_ARG "%d", g.settings.screen_width);
 		return 0;
 	}
 	g.video_w = g.settings.screen_width;
@@ -142,14 +147,14 @@ int rsdkdrv_init(char *err, int errsize)
 	Engine.Init();
 	if (!Engine.running || !Engine.initialised)
 	{
-		snprintf(err, (size_t)errsize, "the engine did not start: %s",
-		         Engine.usingDataFile_Config ? "the data file has no Data/Game/GameConfig.bin it can read, or the screen could not be made"
-		                                     : "the data file is not a Retro Engine v3 data file");
+		snprintf(err, (size_t)errsize, "error.engine_did_not_start" TEXT_ARG "%s",
+		         Engine.usingDataFile_Config ? "error.why.no_config_or_screen"
+		                                     : "error.why.not_v3");
 		return 0;
 	}
 	if (!g.audio_cb)
 	{
-		snprintf(err, (size_t)errsize, "the engine did not open its sound device");
+		snprintf(err, (size_t)errsize, "error.engine_did_not_open_its");
 		return 0;
 	}
 	g.render = 1;
