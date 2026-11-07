@@ -76,3 +76,13 @@ Chimera's `publish-core.yml`.
   every object depends on the flags it was built with.
 - Native and sandbox differ in sound only: a math function the codecs call
   is not wrapped (sources.mk MATH_FUNCS).
+
+## Two CPUs
+
+CI builds and tests the core twice, once for each CPU, on a runner of that
+CPU (x86_64 on ubuntu-24.04, aarch64 on ubuntu-24.04-arm): a package is
+machine code for one CPU, and the guest is built for the CPU it is built on.
+A nightly carries both packages, `<id>-<version>-x86_64.chimeraCore` and
+`<id>-<version>-aarch64.chimeraCore`. On aarch64 the linked `core.wbx` goes
+through miniBox's `wbx-tp-rewrite.py`, which points its thread-pointer reads
+at the machine's slot.
